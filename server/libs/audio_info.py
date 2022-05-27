@@ -11,21 +11,13 @@ class AudioInfo:
 
         try:
             audio_device_count = py_audio.get_device_count()
-            logger.debug(f"Available audio devices (input and output): {audio_device_count}")
-            for i in range(0, audio_device_count):
-                try:
-                    raw_audio_device = py_audio.get_device_info_by_host_api_device_index(0, i)
-
-                    if raw_audio_device["maxInputChannels"] >= 1:
-                        audio_device = AudioInfo.parse_raw_audio_device_to_audio_device(raw_audio_device)
-                        logger.debug(f"Found audio Device: {audio_device.to_string()}")
-                        audio_devices.append(audio_device)
-
-                except Exception as e:
-                    logger.debug("Could not get device infos.")
-                    logger.exception(f"Unexpected error in AudioInfo: {e}")
+            for i in range(audio_device_count):
+                audio_device = py_audio.get_device_info_by_index(i).get('name')
+                print (audio_device)
+                audio_devices.append(audio_device)
 
         except Exception as e:
+            logger.debug("Could not get device infos.")
             logger.exception(f"Unexpected error in AudioInfo: {e}")
 
         logger.debug(f"Found {len(audio_devices)} audio devices.")
