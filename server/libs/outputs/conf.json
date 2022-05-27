@@ -1,0 +1,15 @@
+{
+    "frameSize": {
+      "width": 300, "height": 1
+    },
+    "targets": [
+      {
+        "hostname": "box",
+        "port": 9999,
+        "x": 0, "y": 0, "w": 300, "h": 1
+      }
+    ]
+}
+  
+  
+  

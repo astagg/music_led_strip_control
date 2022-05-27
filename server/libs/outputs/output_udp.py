@@ -3,23 +3,44 @@ from libs.outputs.output import Output  # pylint: disable=E0611, E0401
 import numpy as np
 import logging
 import socket
+from bagle import BagelThrower
+import numpy as np
+import socket
+import json
+from time import sleep
+from colorsys import hsv_to_rgb
 
 
 class OutputUDP(Output):
     def __init__(self, device):
-        # Call the constructor of the base class.
-        super(OutputUDP, self).__init__(device)
-        self.logger = logging.getLogger(__name__)
+        with open('conf.json', "r") as cfg:
+            self.cfg = json.load(cfg)
 
-        output_id = "output_udp"
-
-        self._udp_client_ip = self._device_config["output"][output_id]["udp_client_ip"]
-        self._udp_client_port = int(self._device_config["output"][output_id]["udp_client_port"])
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self._led_strip = self._device_config["led_strip"]
-        self._led_brightness = int(self._device_config["led_brightness"])  # Set to '0' for darkest and 100 for brightest.
+        self.thrower = BagelThrower(cfg)
 
     def show(self, output_array):
+
+
+        # # Truncate values and cast to integer
+        # pixels = np.clip(pixels, 0, 255).astype(int)
+        # # Optional gamma correction
+        # p = np.copy(pixels)
+        # # Read the rgb values
+        # r = p[0][:].astype(int)
+        # g = p[1][:].astype(int)
+        # b = p[2][:].astype(int)
+        # # Update the pixels
+        # frame = thrower.get_frame_buffer()
+
+        # #create array in which we will store the led states
+        # newstrip = [None]*(config.N_PIXELS*3)
+
+        # for i in range(config.N_PIXELS):
+        #     newstrip[i*3] = r[i]
+        #     newstrip[i*3+1] = g[i]
+        #     newstrip[i*3+2] = b[i]
+
+
 
         output_array = output_array * (self._led_brightness / 100)
 
@@ -29,7 +50,8 @@ class OutputUDP(Output):
 
         byte_array = output_array.tobytes('F')
         try:
-            self._sock.sendto(byte_array, (self._udp_client_ip, self._udp_client_port))
+            # self._sock.sendto(byte_array, (self._udp_client_ip, self._udp_client_port))
+            self.thrower.send_frame(byte_array)
         except Exception as ex:
             self.logger.exception(f"Could not send to client", ex)
             self.logger.debug(f"Reinit output of {self._udp_client_ip}")

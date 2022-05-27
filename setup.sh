@@ -11,8 +11,7 @@ ASOUND_DIR="/etc/asound.conf" # Asound config location
 ALSA_DIR="/usr/share/alsa/alsa.conf" # Alsa config location
 SERVICE_DIR="/etc/systemd/system/mlsc.service" # MLSC systemd service location
 SERVICE_NAME="mlsc.service" # MLSC systemd service name
-GIT_BRANCH="master"
-GIT_OWNER="TobKra96"
+GIT_BRANCH="beagle"
 
 
 # Colors
@@ -92,17 +91,6 @@ while [[ "$#" > 0 ]]; do case $1 in
 esac; done
 
 
-case $GIT_BRANCH in
-    master|dev_2.2);;
-    *) GIT_BRANCH="master";;
-esac
-
-case $GIT_OWNER in
-    TobKra96|Teraskull);;
-    *) GIT_OWNER="TobKra96";;
-esac
-
-
 echo
 prompt -s "\t          *********************"
 prompt -s "\t          *  Installing $PROJ_NAME  *"
@@ -152,7 +140,6 @@ if [[ -d $PROJ_DIR ]]; then
         fi
 	    sudo mv -T $PROJ_DIR "${PROJ_DIR}_bak"
         prompt -s "\nNew backup of ${PROJ_NAME} created."
-        sudo git clone https://github.com/${GIT_OWNER}/music_led_strip_control.git
         git checkout $GIT_BRANCH
         prompt -s "\nConfig is stored in .mlsc, in the same directory as the MLSC installation."
         if [[ -f $SERVICE_DIR ]]; then
@@ -163,7 +150,6 @@ if [[ -d $PROJ_DIR ]]; then
         fi
     fi
 else
-    sudo git clone https://github.com/${GIT_OWNER}/music_led_strip_control.git
     git checkout $GIT_BRANCH
 fi
 
